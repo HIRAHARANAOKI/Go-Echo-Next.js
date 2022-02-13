@@ -3,12 +3,11 @@ module api
 go 1.17
 
 require (
-	github.com/labstack/echo v3.3.10+incompatible
+	github.com/go-sql-driver/mysql v1.6.0
 	github.com/labstack/echo/v4 v4.6.3
 )
 
 require (
-	github.com/dgrijalva/jwt-go v3.2.0+incompatible // indirect
 	github.com/golang-jwt/jwt v3.2.2+incompatible // indirect
 	github.com/labstack/gommon v0.3.1 // indirect
 	github.com/mattn/go-colorable v0.1.11 // indirect

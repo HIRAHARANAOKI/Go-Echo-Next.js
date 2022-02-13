@@ -1,8 +1,12 @@
 package main
 
 import (
+	"database/sql"
+	"fmt"
 	"net/http"
 	"strconv"
+
+	_ "github.com/go-sql-driver/mysql"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -21,6 +25,22 @@ var (
 )
 
 var e = createMux()
+
+func dbConnect() *sql.DB {
+	db, err := sql.Open("mysql", "root:password@tcp(mysql)/aadhp")
+	if err != nil {
+		panic(err.Error())
+	}
+	return db
+}
+
+func getRows(db *sql.DB) *sql.Rows {
+	rows, err := db.Query("SELECT id,name FROM users")
+	if err != nil {
+		panic(err.Error())
+	}
+	return rows
+}
 
 func createUser(c echo.Context) error {
 	u := &user{
@@ -55,8 +75,33 @@ func deleteUser(c echo.Context) error {
 	return c.NoContent(http.StatusNoContent)
 }
 
+type Users struct {
+	ID   int    `json:"id"`
+	Name string `json:"name"`
+}
+
 func getAllUsers(c echo.Context) error {
-	return c.JSON(http.StatusOK, users)
+	db := dbConnect()
+	defer db.Close()
+	fmt.Println(db)
+
+	rows := getRows(db)
+	defer rows.Close()
+
+	users := Users{}
+	var results []Users
+	for rows.Next() {
+		err := rows.Scan(&users.ID, &users.Name)
+		if err != nil {
+			panic(err.Error())
+		} else {
+			results = append(results, users)
+		}
+	}
+	fmt.Println(users)
+	fmt.Println(results)
+
+	return c.JSON(http.StatusOK, results)
 }
 
 func main() {
