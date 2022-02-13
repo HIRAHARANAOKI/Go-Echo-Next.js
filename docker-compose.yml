@@ -1,0 +1,13 @@
+version: "3"
+services:
+  api:
+    container_name: golang
+    build:
+      context: .
+      dockerfile: ./api/Dockerfile
+    tty: true
+    command: "air -c .air.toml"
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./api:/go/src/app
