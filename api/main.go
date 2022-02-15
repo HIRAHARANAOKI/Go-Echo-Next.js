@@ -98,8 +98,8 @@ func getAllUsers(c echo.Context) error {
 			results = append(results, users)
 		}
 	}
-	fmt.Println(users)
-	fmt.Println(results)
+	fmt.Println(users, "users")
+	fmt.Println(results, "results")
 
 	return c.JSON(http.StatusOK, results)
 }
@@ -119,6 +119,7 @@ func main() {
 func createMux() *echo.Echo {
 	e := echo.New()
 
+	e.Use(middleware.CORS())
 	e.Use(middleware.Recover())
 	e.Use(middleware.Logger())
 	e.Use(middleware.Gzip())
